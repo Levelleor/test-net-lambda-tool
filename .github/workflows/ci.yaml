@@ -37,7 +37,7 @@ jobs:
             args.push('--msbuild-parameters', '"--no-restore --no-build"');
 
             // Execute the dotnet lambda command
-            await exec('dotnet', args, {
+            await exec.exec('dotnet', args, {
               env: {
                 PATH: `${process.env.PATH}:${process.env.HOME}/.dotnet/tools`
               }
