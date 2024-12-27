@@ -1,0 +1,48 @@
+name: DotNet Lambda Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  dotnet-lambda:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0
+
+      - name: Install AWS .NET Lambda Global Tool
+        run: dotnet tool install -g Amazon.Lambda.Tools
+
+      - name: Run DotNet Lambda Command
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { exec } = require('@actions/exec');
+            
+            // Define arguments for the dotnet lambda command
+            const args = [
+              'lambda',
+              'package',
+              '--output-package',
+              'package.zip'
+            ];
+            
+            // Add msbuild parameters
+            args.push('--msbuild-parameters', '"--no-restore --no-build"');
+
+            // Execute the dotnet lambda command
+            await exec('dotnet', args, {
+              env: {
+                PATH: `${process.env.PATH}:${process.env.HOME}/.dotnet/tools`
+              }
+            });
+        env:
+          DOTNET_ROOT: ${{ runner.tool_cache }}/dotnet
