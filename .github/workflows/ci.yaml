@@ -24,9 +24,7 @@ jobs:
       - name: Run DotNet Lambda Command
         uses: actions/github-script@v6
         with:
-          script: |
-            const { exec } = require('@actions/exec');
-            
+          script: |            
             // Define arguments for the dotnet lambda command
             const args = [
               'lambda',
